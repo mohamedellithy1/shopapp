@@ -1,9 +1,12 @@
 import 'package:conditional_builder/conditional_builder.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shopapp/layout/shop_layout/Home_Layout.dart';
+import 'package:shopapp/modules/login/cubit/cubit.dart';
+import 'package:shopapp/modules/login/cubit/state.dart';
 import 'package:shopapp/shared/components/components.dart';
-import 'package:shopapp/shared/cubit/cubit.dart';
-import 'package:shopapp/shared/cubit/state.dart';
+import 'package:shopapp/shared/network/local/cache_helper.dart';
 import 'package:shopapp/shared/style/color.dart';
 class LoginScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
@@ -14,7 +17,21 @@ class LoginScreen extends StatelessWidget {
     return BlocProvider(
       create: (BuildContext context)=>ShopLoginCubit(),
       child: BlocConsumer<ShopLoginCubit, ShopLoginState>(
-        listener: (context, state){},
+        listener: (context, state){
+          if(state is ShopLoginSuccessesState){
+            if(state.loginModel.status){
+              CacheHelper.saveData(key: 'token', value: state.loginModel.data.token).then((value){
+              print(state.loginModel.data.token);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeLayout()));
+              });
+            }else{
+             toast(
+                 msg: state.loginModel.message,
+                 color: Colors.red
+             );
+            }
+          }
+        },
         builder: (context , state){
           ShopLoginCubit cubit =ShopLoginCubit();
           return GestureDetector(
@@ -59,27 +76,32 @@ class LoginScreen extends StatelessWidget {
                               return null;
                             },
                             prefix: Icons.lock,
-                            suffix: Icons.visibility_off
+                            suffix: cubit.suffix,
+                            onPressed:()=>cubit.changePasswordState(),
+                          isPassword: cubit.hide
+
                         ),
                         SizedBox(height: 20,),
                         ConditionalBuilder(
-                          condition: state is! ShopLoadingLoginState ,
-                          builder: (context)=> defaultButton(
-                              text:'Login' ,
-                              background: defaultColor ,
-                              radius: 20 ,
-                              onTap: (){
-                                if(formKey.currentState.validate())
-                               {
-                                 cubit.userLogin(
-                                     email: emailController.text,
-                                     password: passwordController.text
-                                 );
-                               }
-                              },
-                              textSize: 18
-                          ),
-                          fallback:(context)=> CircularProgressIndicator(),
+                            condition: state is! ShopLoadingLoginState,
+                            builder: (BuildContext context)=> defaultButton(
+                            text:'Login' ,
+                            background: defaultColor ,
+                            radius: 20 ,
+                            onTap: (){
+                              if(formKey.currentState.validate())
+                              {
+                                cubit.userLogin(
+                                    email: emailController.text,
+                                    password: passwordController.text
+                                );
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeLayout()));
+                              }
+                            },
+                            textSize: 18,
+                              isToUpperCase: true,
+                        ),
+                          fallback: (BuildContext context)=> Center(child: CircularProgressIndicator()),
                         ),
                         SizedBox(height: 10,),
                         TextButton(onPressed: (){},
@@ -91,7 +113,6 @@ class LoginScreen extends StatelessWidget {
                                   children: [
                                     Text('Register', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
                                     SizedBox(width: 5,),
-                                    Icon(Icons.arrow_forward, size: 20,),
                                   ],
                                 )
                               ],

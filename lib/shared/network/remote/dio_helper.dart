@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
 class DioHelper{
 static Dio dio;
 static init(){
@@ -23,7 +22,14 @@ static  Future<Response> getData({
 static Future<Response> postData(
     {@required String url,
       Map<String, dynamic> query,
-      @required Map<String, String> data}) async {
+      @required Map<String, String> data ,
+      String lang = 'ar',
+      String token ,
+    }) async {
+  dio.options.headers = {
+    'lang' : lang,
+    'Authorization': token
+  };
   return await dio.post(url, queryParameters: query, data: data);
 }
 }

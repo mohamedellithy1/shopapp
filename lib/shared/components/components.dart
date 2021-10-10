@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 Widget defaultButton ({
   double width = double.infinity,
@@ -45,7 +46,8 @@ Widget defaultTextForm({
       labelText: labelText,
       suffixIcon: suffix!=null ?IconButton(
           icon: Icon(suffix, color: Colors.black,),
-          onPressed: onPressed) : null
+          onPressed:onPressed
+      ) : null
       ,prefixIcon: Icon(prefix, color: Colors.black,),
       border: OutlineInputBorder()
   ) ,
@@ -61,4 +63,15 @@ Widget buildSeparator()=> Padding(
     color: Colors.black,
 
   ),
+);
+void toast ({
+  @required String msg,
+  @required Color color
+})=> Fluttertoast.showToast(
+    msg: msg,
+    fontSize: 16,
+    backgroundColor: color,
+    gravity: ToastGravity.BOTTOM,
+    textColor: Colors.white,
+    toastLength: Toast.LENGTH_LONG
 );
