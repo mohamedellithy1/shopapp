@@ -15,8 +15,15 @@ dio =Dio(
 }
 static  Future<Response> getData({
 @required String url,
-  @required Map<String , dynamic> query
+  Map<String , dynamic> query,
+  String lang = 'en',
+  String token,
 }) async {
+  dio.options.headers = {
+    'lang' : lang,
+    'Content-Type':'application/json',
+    'Authorization': token
+  };
   return await dio.get(url, queryParameters: query);
 }
 static Future<Response> postData(
@@ -28,6 +35,7 @@ static Future<Response> postData(
     }) async {
   dio.options.headers = {
     'lang' : lang,
+    'Content-Type':'application/json',
     'Authorization': token
   };
   return await dio.post(url, queryParameters: query, data: data);

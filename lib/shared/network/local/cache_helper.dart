@@ -20,4 +20,5 @@ class CacheHelper{
     if(value is bool) return await sharedPreferences.setBool(key, value);
     return await sharedPreferences.setDouble(key, value);
   }
+
 }

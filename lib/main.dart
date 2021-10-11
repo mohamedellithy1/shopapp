@@ -21,7 +21,7 @@ void main()async{
   String token = CacheHelper.getData(key: 'token');
   if(onBoarding != null){
     if(token != null) widget = HomeLayout();
-    else widget = LoginScreen();
+    else widget = ShopLoginScreen();
   }else{
     widget = OnBoarding();
   }
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (BuildContext context) => ShopCubit() )
+        BlocProvider(create: (BuildContext context) => ShopCubit()..getHomeData())
       ],
       child: MaterialApp(
                 theme: lightTheme,

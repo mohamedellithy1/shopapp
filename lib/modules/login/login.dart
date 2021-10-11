@@ -1,39 +1,46 @@
-import 'package:conditional_builder/conditional_builder.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopapp/layout/shop_layout/Home_Layout.dart';
 import 'package:shopapp/modules/login/cubit/cubit.dart';
 import 'package:shopapp/modules/login/cubit/state.dart';
+import 'package:shopapp/modules/register/registerScreen.dart';
 import 'package:shopapp/shared/components/components.dart';
 import 'package:shopapp/shared/network/local/cache_helper.dart';
-import 'package:shopapp/shared/style/color.dart';
-class LoginScreen extends StatelessWidget {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  var formKey = GlobalKey<FormState>();
+
+class ShopLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var formKey=GlobalKey<FormState>();
+    var emailController = TextEditingController();
+    var passwordController = TextEditingController();
+
     return BlocProvider(
-      create: (BuildContext context)=>ShopLoginCubit(),
+      create: (BuildContext context) => ShopLoginCubit(),
       child: BlocConsumer<ShopLoginCubit, ShopLoginState>(
-        listener: (context, state){
+        listener: (context, state) {
           if(state is ShopLoginSuccessesState){
-            if(state.loginModel.status){
-              CacheHelper.saveData(key: 'token', value: state.loginModel.data.token).then((value){
-              print(state.loginModel.data.token);
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeLayout()));
+            if(state.loginModel.status==true){
+              print(state.loginModel.message);
+              CacheHelper.saveData(value: "${state.loginModel.data.token}", key: "token").then((value) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomeLayout()),
+                        (route) => false);
               });
-            }else{
-             toast(
-                 msg: state.loginModel.message,
-                 color: Colors.red
-             );
+              toast(
+                msg: state.loginModel.message,
+                color: Colors.green
+              );
             }
+            else
+            {
+              toast(msg: state.loginModel.message, color: Colors.red);
+            }
+
           }
         },
-        builder: (context , state){
-          ShopLoginCubit cubit =ShopLoginCubit();
+        builder: (context, state) {
           return GestureDetector(
             onTap: ()=>FocusScope.of(context).unfocus(),
             child: Scaffold(
@@ -41,82 +48,102 @@ class LoginScreen extends StatelessWidget {
               body: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
                   child: Form(
-                    key: formKey ,
+                    key: formKey,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('LOGIN' ,
-                            style: Theme.of(context).textTheme.headline4.copyWith(
-                                fontSize: 40, color: Colors.black
-                            )
+                        Text(
+                          "LOGIN",
+                          style: Theme.of(context).textTheme.headline5.copyWith(fontSize: 35, fontWeight: FontWeight.bold),
                         ),
-                        Image.asset('assets/image/login.png'),
+                        Text("Login now to browse our hot offers",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                .copyWith(color: Colors.grey)),
+                        Image(
+                          image: AssetImage("assets/image/login.png"),
+                        ),
+
+                        // TextFormField(
+                        //   controller: EmailController,
+                        //   keyboardType: TextInputType.emailAddress,
+                        //   decoration: InputDecoration(
+                        //     labelText: "Email",
+                        //     prefixIcon: Icon(Icons.email_outlined),
+                        //     border: OutlineInputBorder(),
+                        //   ),
+                        //   validator: (String value) {
+                        //     if (value.isEmpty) return "Email must not be empty";
+                        //     return null;
+                        //   },
+                        // ),
                         defaultTextForm(
                             controller: emailController,
                             type: TextInputType.emailAddress,
-                            labelText: 'Enter Your Email',
-                            validated: (String value){
-                              if(value.isEmpty || value == null){
-                                return 'Enter your Email';
-                              }
+                            labelText: 'Email',
+                            validated: (String value) {
+                              if (value.isEmpty) return "Email must not be empty";
                               return null;
                             },
-                            prefix: Icons.email
+                            prefix: Icons.email,
                         ),
-                        SizedBox(height: 20,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         defaultTextForm(
                             controller: passwordController,
                             type: TextInputType.visiblePassword,
-                            labelText: 'Enter Your Password',
-                            validated: (String value){
-                              if(value.isEmpty || value == null){
-                                return 'Enter the password';
-                              }
+                            labelText: 'Password',
+                            validated: (String value) {
+                              if (value.isEmpty) return "Password must not be empty";
                               return null;
-                            },
+                              },
                             prefix: Icons.lock,
-                            suffix: cubit.suffix,
-                            onPressed:()=>cubit.changePasswordState(),
-                          isPassword: cubit.hide
+                            isPassword: ShopLoginCubit.get(context).hide,
+                          onSubmit: (value){
+                              if(formKey.currentState.validate()){
 
-                        ),
-                        SizedBox(height: 20,),
-                        ConditionalBuilder(
-                            condition: state is! ShopLoadingLoginState,
-                            builder: (BuildContext context)=> defaultButton(
-                            text:'Login' ,
-                            background: defaultColor ,
-                            radius: 20 ,
-                            onTap: (){
-                              if(formKey.currentState.validate())
-                              {
-                                cubit.userLogin(
-                                    email: emailController.text,
-                                    password: passwordController.text
-                                );
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeLayout()));
                               }
-                            },
-                            textSize: 18,
-                              isToUpperCase: true,
+                              ShopLoginCubit.get(context).userLogin(email: emailController.text, password: passwordController.text);
+                              },
+                          suffix: ShopLoginCubit.get(context).suffix,
+                                    onPressed: (){
+                                      ShopLoginCubit.get(context).changePasswordState();
+                                    }
+                                    ),
+                        SizedBox(
+                          height: 10,
                         ),
-                          fallback: (BuildContext context)=> Center(child: CircularProgressIndicator()),
+                        state is ShopLoadingLoginState
+                            ? Center(child: CircularProgressIndicator())
+                            : defaultButton(
+                          text: 'Login',
+                          textSize: 25,
+                          radius: 20,
+                          background: Colors.deepOrange,
+                          onTap:() {
+                            if(formKey.currentState.validate()){
+                              ShopLoginCubit.get(context).userLogin(email: emailController.text, password: passwordController.text);
+                            }
+                          }
                         ),
-                        SizedBox(height: 10,),
-                        TextButton(onPressed: (){},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("Don't have an account ? "),
-                                Row(
-                                  children: [
-                                    Text('Register', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-                                    SizedBox(width: 5,),
-                                  ],
-                                )
-                              ],
-                            ))
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Dont\'t have an account ?"),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>RegisterScreen()),
+                                          (route) => false);
+                                },
+                                child: Text("Register now"))
+                          ],
+                        ),
                       ],
                     ),
                   ),

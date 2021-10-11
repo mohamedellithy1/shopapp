@@ -27,7 +27,7 @@ class _OnBoardingState extends State<OnBoarding> {
     CacheHelper.saveData(key: 'onBoarding', value: true).then((value){
       if(value){
         Navigator.pushAndRemoveUntil(
-            context, MaterialPageRoute(builder:(context)=>LoginScreen()),
+            context, MaterialPageRoute(builder:(context)=>ShopLoginScreen()),
                 (Route<dynamic>route)=>false);
       }
     });

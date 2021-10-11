@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopapp/layout/shop_layout/Home_Layout.dart';
 import 'package:shopapp/models/login/login_model.dart';
 import 'package:shopapp/modules/login/cubit/state.dart';
 import 'package:shopapp/shared/network/end_points.dart';
