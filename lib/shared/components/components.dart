@@ -60,7 +60,7 @@ Widget buildSeparator()=> Padding(
 
     height: 1,
 
-    color: Colors.black,
+    color: Colors.deepOrange[100],
 
   ),
 );

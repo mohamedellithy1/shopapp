@@ -1,18 +1,18 @@
 class HomeModel{
   bool status;
   String message;
-  DataModel data;
+  DataModelHome data;
   HomeModel.fromJson(Map<String,dynamic>json){
     status=json['status'];
-    data=DataModel.fromJson(json['data']);
+    data=DataModelHome.fromJson(json['data']);
   }
 
 
 }
-class DataModel{
+class DataModelHome{
   List<Banners>banners=[];
   List<ProductsData>products=[];
-  DataModel.fromJson(Map<String,dynamic>json){
+  DataModelHome.fromJson(Map<String,dynamic>json){
     json["banners"].forEach((element) {
       banners.add(Banners.fromJson(element));
     });

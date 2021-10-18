@@ -29,7 +29,7 @@ static  Future<Response> getData({
 static Future<Response> postData(
     {@required String url,
       Map<String, dynamic> query,
-      @required Map<String, String> data ,
+      @required Map<String, dynamic> data ,
       String lang = 'ar',
       String token ,
     }) async {

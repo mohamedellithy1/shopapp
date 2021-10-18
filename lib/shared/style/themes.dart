@@ -4,13 +4,12 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:shopapp/shared/style/color.dart';
 
 ThemeData darkTheme = ThemeData(
-
     primarySwatch: defaultColor,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: defaultColor
     ),
     scaffoldBackgroundColor: HexColor('333737'),
-    appBarTheme: AppBarTheme(color: HexColor('333737'), elevation: 0,
+    appBarTheme: AppBarTheme(color: Colors.grey, elevation: 0,
         iconTheme: IconThemeData(
             color: Colors.white
         ),
