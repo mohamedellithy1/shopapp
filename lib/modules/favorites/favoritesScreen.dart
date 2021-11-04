@@ -1,25 +1,33 @@
+import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopapp/layout/shop_layout/cubit_Home/cubit.dart';
 import 'package:shopapp/layout/shop_layout/cubit_Home/state.dart';
+import 'package:shopapp/models/get_favorite_model/Get_Favorite_model.dart';
 import 'package:shopapp/shared/components/components.dart';
+import 'package:shopapp/shared/style/color.dart';
 
 class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ShopCubit , ShopState>(
-      listener: (context , state) {},
+      listener: (context , state) {
+      },
       builder: (context, state){
-        return ListView.separated(
-            physics: BouncingScrollPhysics(),
-            itemBuilder:(context , index)=> buildFavoriteItem(),
-            separatorBuilder: (context , index)=> buildSeparator(),
-            itemCount: 10
+        return ConditionalBuilder(
+          condition: state is! ShopLoadingGetFavoritesData ,
+          builder: (context) => ListView.separated(
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) => buildFavoriteItem(ShopCubit.get(context).getFavoritesModel.data.data[index] , context),
+              separatorBuilder: (context , index)=> buildSeparator(),
+              itemCount: ShopCubit.get(context).getFavoritesModel.data.data.length
+          ),
+          fallback: (context) => Center(child: CircularProgressIndicator()),
         );
       },
     );
   }
-  Widget buildFavoriteItem(){
+  Widget buildFavoriteItem(FavoritesData favoritesModel , context){
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -34,12 +42,11 @@ class FavoritesScreen extends StatelessWidget {
                   alignment: AlignmentDirectional.bottomStart,
                   children:[
                     Image(
-                      image: NetworkImage("https://student.valuxapps.com/storage/uploads/products/1615441020ydvqD.item_XXL_51889566_32a329591e022.jpeg"),
+                      image: NetworkImage(favoritesModel.product.image),
                       width: 120,
                       height: 120 ,
-                      fit: BoxFit.cover,
                     ),
-                    if(1 !=0)
+                    if(favoritesModel.product.discount !=0)
                       Container(
                         width: 100,
                         height: 40,
@@ -56,7 +63,7 @@ class FavoritesScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Apple MacBook Pro',
+                  Text(favoritesModel.product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 14),
@@ -64,12 +71,12 @@ class FavoritesScreen extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        Text('2500',
+                        Text(favoritesModel.product.price.toString(),
                           style: TextStyle(fontSize: 14, color: Colors.blueAccent),
                         ),
                         SizedBox(width: 5,),
-                        if(1 !=0)
-                          Text('2000',
+                        if(0!=0)
+                          Text(favoritesModel.product.oldPrice,
                             style: TextStyle(fontSize: 14,
                                 decoration: TextDecoration.lineThrough,
                                 color: Colors.blueAccent
@@ -78,9 +85,11 @@ class FavoritesScreen extends StatelessWidget {
                         Spacer(),
                         IconButton(
                             icon: CircleAvatar(
+                                backgroundColor: ShopCubit.get(context).favorite[favoritesModel.product.id] ? defaultColor : Colors.grey,
                                 child:
                                 Icon(Icons.favorite_border_outlined, color: Colors.white,)),
                             onPressed: (){
+                              ShopCubit.get(context).changeFavorites(favoritesModel.product.id);
                             }
                         )
                       ],

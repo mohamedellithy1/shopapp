@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shopapp/shared/style/color.dart';
 
 Widget defaultButton ({
   double width = double.infinity,
-  Color background = Colors.blue,
+  Color background = defaultColor,
   @required String text ,
   @required Function onTap,
   double textSize ,

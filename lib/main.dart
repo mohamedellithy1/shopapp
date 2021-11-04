@@ -9,7 +9,6 @@ import 'package:shopapp/modules/splash/splash_Screen.dart';
 import 'package:shopapp/shared/network/local/cache_helper.dart';
 import 'package:shopapp/shared/network/remote/dio_helper.dart';
 import 'package:shopapp/shared/style/themes.dart';
-
 import 'modules/login/cubit/bloc_observer.dart';
 void main()async{
   //بيتاكد ان كل حاجه هنا ف الميثود خلصت و بعدين يفتح الابلكيشن
@@ -20,8 +19,6 @@ void main()async{
   Widget widget;
   bool onBoarding = CacheHelper.getData(key: 'onBoarding');
   String token = CacheHelper.getData(key: 'token');
-  if(onBoarding == null && onBoarding != null && token == null && token != null) {
-    widget = SplashScreen();
     if (onBoarding != null) {
       if (token != null)
         widget = HomeLayout();
@@ -29,7 +26,6 @@ void main()async{
         widget = ShopLoginScreen();
     } else {
       widget = OnBoarding();
-    }
   }
   runApp(MyApp(startWidget: widget,));
 }
@@ -40,7 +36,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (BuildContext context) => ShopCubit()..getHomeData()..getCateogries())
+        BlocProvider(create: (BuildContext context) =>
+        ShopCubit()..getHomeData()..getCateogries()..getFavoritesData()..getSettingProfile())
       ],
       child: MaterialApp(
                 theme: lightTheme,

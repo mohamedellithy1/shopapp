@@ -5,6 +5,7 @@ import 'package:shopapp/modules/login/cubit/cubit.dart';
 import 'package:shopapp/modules/login/cubit/state.dart';
 import 'package:shopapp/modules/register/registerScreen.dart';
 import 'package:shopapp/shared/components/components.dart';
+import 'package:shopapp/shared/components/constants.dart';
 import 'package:shopapp/shared/network/local/cache_helper.dart';
 
 class ShopLoginScreen extends StatelessWidget {
@@ -22,6 +23,7 @@ class ShopLoginScreen extends StatelessWidget {
             if(state.loginModel.status==true){
               print(state.loginModel.message);
               CacheHelper.saveData(value: "${state.loginModel.data.token}", key: "token").then((value) {
+                token = state.loginModel.data.token;
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
@@ -106,9 +108,11 @@ class ShopLoginScreen extends StatelessWidget {
                               if(formKey.currentState.validate()){
 
                               }
-                              ShopLoginCubit.get(context).userLogin(email: emailController.text, password: passwordController.text);
+                              ShopLoginCubit.get(context).userLogin(
+                                  email: emailController.text,
+                                  password: passwordController.text);
                               },
-                          suffix: ShopLoginCubit.get(context).suffix,
+                            suffix: ShopLoginCubit.get(context).suffix,
                                     onPressed: (){
                                       ShopLoginCubit.get(context).changePasswordState();
                                     }
@@ -125,7 +129,9 @@ class ShopLoginScreen extends StatelessWidget {
                           background: Colors.deepOrange,
                           onTap:() {
                             if(formKey.currentState.validate()){
-                              ShopLoginCubit.get(context).userLogin(email: emailController.text, password: passwordController.text);
+                              ShopLoginCubit.get(context).userLogin(
+                                  email: emailController.text,
+                                  password: passwordController.text);
                             }
                           }
                         ),

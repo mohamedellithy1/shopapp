@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopapp/layout/shop_layout/cubit_Home/state.dart';
 import 'package:shopapp/models/Favorite_model/favorites_model.dart';
 import 'package:shopapp/models/cateogries_model/cateogries_model.dart';
+import 'package:shopapp/models/get_favorite_model/Get_Favorite_model.dart';
 import 'package:shopapp/models/home_model/home_model.dart';
 import 'package:shopapp/models/login/login_model.dart';
 import 'package:shopapp/modules/cateogries/cateogriesScreen.dart';
@@ -77,6 +78,8 @@ BottomNavigationBarItem(icon: Icon(Icons.settings) ,label: 'Settings' ),
       changeFavoriteModel = ChangeFavoriteModel.fromJson(value.data);
       if(!changeFavoriteModel.status){
         favorite[productId]=!favorite[productId];
+      }else{
+        getFavoritesData();
       }
       print(changeFavoriteModel.message);
       print(favorite[productId]);
@@ -88,5 +91,31 @@ BottomNavigationBarItem(icon: Icon(Icons.settings) ,label: 'Settings' ),
       emit(ShopErrorChangeFavoriteData());
     }
     );
+  }
+  GetFavoritesModel getFavoritesModel ;
+  void getFavoritesData(){
+    emit(ShopLoadingGetFavoritesData());
+    DioHelper.getData(url: Favorite , token: CacheHelper.getData(key: 'token')
+    ).then((value) {
+      getFavoritesModel = GetFavoritesModel.fromJson(value.data);
+      print(value.data);
+      emit(ShopSuccessGetFavoritesData());
+    }
+    ).catchError((error){
+      emit(ShopErrorGEtCateogriesData(error: error));
+    });
+  }
+  LoginModel modelProfile ;
+  void getSettingProfile(){
+    emit(ShopLoadingGetSettingData());
+    DioHelper.getData(url: profile , token: CacheHelper.getData(key: 'token')
+    ).then((value) {
+      modelProfile = LoginModel.fromJson(value.data);
+      print(modelProfile.data.name);
+      emit(ShopSuccessGetSettingData(modelProfile));
+    }
+    ).catchError((error){
+      emit(ShopErrorGetSettingData(error: error));
+    });
   }
 }
