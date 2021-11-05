@@ -9,7 +9,8 @@ import 'package:shopapp/modules/splash/splash_Screen.dart';
 import 'package:shopapp/shared/network/local/cache_helper.dart';
 import 'package:shopapp/shared/network/remote/dio_helper.dart';
 import 'package:shopapp/shared/style/themes.dart';
-import 'modules/login/cubit/bloc_observer.dart';
+
+import 'models/login/cubit/bloc_observer.dart';
 void main()async{
   //بيتاكد ان كل حاجه هنا ف الميثود خلصت و بعدين يفتح الابلكيشن
   WidgetsFlutterBinding.ensureInitialized();

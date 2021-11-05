@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shopapp/layout/shop_layout/Home_Layout.dart';
-import 'package:shopapp/modules/login/cubit/cubit.dart';
-import 'package:shopapp/modules/login/cubit/state.dart';
+import 'package:shopapp/models/login/cubit/cubit.dart';
+import 'package:shopapp/models/login/cubit/state.dart';
 import 'package:shopapp/modules/register/registerScreen.dart';
 import 'package:shopapp/shared/components/components.dart';
 import 'package:shopapp/shared/components/constants.dart';
@@ -141,11 +141,11 @@ class ShopLoginScreen extends StatelessWidget {
                             Text("Dont\'t have an account ?"),
                             TextButton(
                                 onPressed: () {
-                                  Navigator.pushAndRemoveUntil(
+                                  Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>RegisterScreen()),
-                                          (route) => false);
+                                          );
                                 },
                                 child: Text("Register now"))
                           ],
