@@ -126,6 +126,7 @@ class RegisterScreen extends StatelessWidget {
                                     name: nameController.text,
                                     phone: phoneController.text
                                 );
+                                FocusScope.of(context).requestFocus(FocusNode());
                               }),
                         ),
                       ],

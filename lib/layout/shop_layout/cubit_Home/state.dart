@@ -39,4 +39,14 @@ class ShopSuccessGetSettingData extends ShopState{
 class ShopErrorGetSettingData extends ShopState{
   final error;
   ShopErrorGetSettingData({this.error});
+}class ShopLoadingUpdateProfileData extends ShopState{}
+class ShopSuccessUpdateProfileData extends ShopState{
+  final LoginModel loginModel;
+  ShopSuccessUpdateProfileData(this.loginModel);
 }
+class ShopErrorUpdateProfileData extends ShopState{
+  final error;
+  ShopErrorUpdateProfileData({this.error});
+}
+class ShopLoadingDrown extends ShopState{}
+class ShopSuccessDrown extends ShopState{}

@@ -131,7 +131,9 @@ class ShopLoginScreen extends StatelessWidget {
                             if(formKey.currentState.validate()){
                               ShopLoginCubit.get(context).userLogin(
                                   email: emailController.text,
-                                  password: passwordController.text);
+                                  password: passwordController.text
+                              );
+                              FocusScope.of(context).requestFocus(FocusNode());
                             }
                           }
                         ),

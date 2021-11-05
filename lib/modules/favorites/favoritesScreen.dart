@@ -41,10 +41,19 @@ class FavoritesScreen extends StatelessWidget {
               child: Stack(
                   alignment: AlignmentDirectional.bottomStart,
                   children:[
-                    Image(
-                      image: NetworkImage(favoritesModel.product.image),
+                    Image.network( favoritesModel.product.image ,loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null ?
+                          loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                              : null,
+                        ),
+                      );
+                    },
+                      fit: BoxFit.cover,
+                      height: 120,
                       width: 120,
-                      height: 120 ,
                     ),
                     if(favoritesModel.product.discount !=0)
                       Container(

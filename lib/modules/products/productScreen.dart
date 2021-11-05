@@ -36,11 +36,20 @@ class ProductScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CarouselSlider(
-              items: homeModel.data.banners.map((e) =>Image(
-                  image: NetworkImage('${e.image}'),
-                width: double.infinity,
-                fit: BoxFit.cover,
-              )
+              items: homeModel.data.banners.map((e) =>
+                  Image.network( e.image ,loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null ?
+                        loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                            : null,
+                      ),
+                    );
+                  },
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
               ).toList(),
               options: CarouselOptions(
                 height: 200,
@@ -107,12 +116,20 @@ class ProductScreen extends StatelessWidget {
                 Stack(
                   alignment: AlignmentDirectional.bottomStart,
                   children:[
-                    Image(
-                      image: NetworkImage('${model.image}'),
-                    width: double.infinity,
-                    height: 200 ,
-                    fit: BoxFit.cover,
-                  ),
+                    Image.network( model.image ,loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null ?
+                          loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                              : null,
+                        ),
+                      );
+                    },
+                      fit: BoxFit.cover,
+                      height: 200,
+                      width: double.infinity,
+                    ),
                     if(model.discount !=0)
                     Container(
                       width: 100,
@@ -163,10 +180,20 @@ class ProductScreen extends StatelessWidget {
     alignment: AlignmentDirectional.bottomCenter,
     children:
     [
-      Image(image: NetworkImage(model.image),
-        height:100,
-        width: 100 ,
-        fit: BoxFit.cover,),
+      Image.network( model.image ,loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Center(
+          child: CircularProgressIndicator(
+            value: loadingProgress.expectedTotalBytes != null ?
+            loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                : null,
+          ),
+        );
+      },
+        fit: BoxFit.cover,
+        height: 120,
+        width: 120,
+      ),
       Container(
           width: 100,
           color: Colors.black.withOpacity(.8),

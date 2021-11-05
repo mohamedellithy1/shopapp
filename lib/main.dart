@@ -17,22 +17,12 @@ void main()async{
   Bloc.observer= MyBlocObserver();
   await DioHelper.init();
   await CacheHelper.init();
-  Widget widget;
-  bool onBoarding = CacheHelper.getData(key: 'onBoarding');
-  String token = CacheHelper.getData(key: 'token');
-    if (onBoarding != null) {
-      if (token != null)
-        widget = HomeLayout();
-      else
-        widget = ShopLoginScreen();
-    } else {
-      widget = OnBoarding();
-  }
-  runApp(MyApp(startWidget: widget,));
+
+  runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
-  Widget  startWidget;
-  MyApp({this.startWidget});
+  // Widget  startWidget;
+  MyApp();
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -45,7 +35,7 @@ class MyApp extends StatelessWidget {
                 darkTheme: darkTheme,
                 themeMode: ThemeMode.light,
                 debugShowCheckedModeBanner: false,
-                home: startWidget
+                home: SplashScreen()
             ),
     );
   }

@@ -16,56 +16,64 @@ import 'package:shopapp/shared/network/end_points.dart';
 import 'package:shopapp/shared/network/local/cache_helper.dart';
 import 'package:shopapp/shared/network/remote/dio_helper.dart';
 
-class ShopCubit extends Cubit<ShopState>{
-  ShopCubit(): super (ShopInitialState());
-  static ShopCubit get(context)=> BlocProvider.of(context);
+class ShopCubit extends Cubit<ShopState> {
+  ShopCubit() : super (ShopInitialState());
+
+  static ShopCubit get(context) => BlocProvider.of(context);
   int currentIndex = 0;
-  List<BottomNavigationBarItem>bottomItem =[
-BottomNavigationBarItem(icon: Icon(Icons.home) ,label: 'Home' ),
-BottomNavigationBarItem(icon:Icon(Icons.apps),label: 'Categories' ),
-BottomNavigationBarItem(icon: Icon(Icons.favorite) ,label: 'Favorite' ),
-BottomNavigationBarItem(icon: Icon(Icons.settings) ,label: 'Settings' ),
+  List<BottomNavigationBarItem>bottomItem = [
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+    BottomNavigationBarItem(icon: Icon(Icons.apps), label: 'Categories'),
+    BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorite'),
+    BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
   ];
-  List <Widget> bottomScreen =[
+  List <Widget> bottomScreen = [
     ProductScreen(),
     CateogriesScreen(),
     FavoritesScreen(),
     SettingScreen(),
   ];
-  void changeScreen(int index ){
+
+  void changeScreen(int index) {
     currentIndex = index;
     emit(ShopChangeBottomNavState());
   }
+
   HomeModel homeModel;
   CategoriesModel cateogriesModel;
-  Map<int , bool> favorite ={};
-  void getHomeData(){
+  Map<int, bool> favorite = {};
+
+  void getHomeData() {
     emit(ShopLoadingHomeGetData());
-    DioHelper.getData(url: Home, token: CacheHelper.getData(key: 'token')).then((value){
+    DioHelper.getData(url: Home, token: CacheHelper.getData(key: 'token'))
+        .then((value) {
       homeModel = HomeModel.fromJson(value.data);
       homeModel.data.products.forEach((element) {
         favorite.addAll({
-        element.id : element.in_favorites
+          element.id: element.in_favorites
         }
         );
       });
       print(favorite);
       emit(ShopSuccessHomeGetData());
-    }).catchError((error){
+    }).catchError((error) {
       emit(ShopErrorHomeGetData(error: error.toString()));
     });
   }
-  void getCateogries(){
-    DioHelper.getData(url: Get_Cateogries, token: token).then((value){
+
+  void getCateogries() {
+    DioHelper.getData(url: Get_Cateogries, token: token).then((value) {
       cateogriesModel = CategoriesModel.fromJson(value.data);
       emit(ShopSuccessGEtCateogriesData());
-    }).catchError((error){
+    }).catchError((error) {
       emit(ShopErrorGEtCateogriesData(error: error.toString()));
     });
   }
+
   LoginModel loginModel;
   ChangeFavoriteModel changeFavoriteModel;
-  void changeFavorites(int productId){
+
+  void changeFavorites(int productId) {
     favorite[productId] = !favorite[productId];
     emit(ShopLoadingChangeFavoriteData());
     DioHelper.postData(
@@ -73,12 +81,12 @@ BottomNavigationBarItem(icon: Icon(Icons.settings) ,label: 'Settings' ),
         data: {
           'product_id': productId
         },
-      token: CacheHelper.getData(key: 'token')
+        token: CacheHelper.getData(key: 'token')
     ).then((value) {
       changeFavoriteModel = ChangeFavoriteModel.fromJson(value.data);
-      if(!changeFavoriteModel.status){
-        favorite[productId]=!favorite[productId];
-      }else{
+      if (!changeFavoriteModel.status) {
+        favorite[productId] = !favorite[productId];
+      } else {
         getFavoritesData();
       }
       print(changeFavoriteModel.message);
@@ -86,36 +94,62 @@ BottomNavigationBarItem(icon: Icon(Icons.settings) ,label: 'Settings' ),
       print(value.data);
       emit(ShopSuccessChangeFavoriteData(changeFavoriteModel));
     }
-    ).catchError((error){
-      favorite[productId]=!favorite[productId];
+    ).catchError((error) {
+      favorite[productId] = !favorite[productId];
       emit(ShopErrorChangeFavoriteData());
     }
     );
   }
-  GetFavoritesModel getFavoritesModel ;
-  void getFavoritesData(){
+
+  GetFavoritesModel getFavoritesModel;
+
+  void getFavoritesData() {
     emit(ShopLoadingGetFavoritesData());
-    DioHelper.getData(url: Favorite , token: CacheHelper.getData(key: 'token')
+    DioHelper.getData(url: Favorite, token: CacheHelper.getData(key: 'token')
     ).then((value) {
       getFavoritesModel = GetFavoritesModel.fromJson(value.data);
       print(value.data);
       emit(ShopSuccessGetFavoritesData());
     }
-    ).catchError((error){
+    ).catchError((error) {
       emit(ShopErrorGEtCateogriesData(error: error));
     });
   }
-  LoginModel modelProfile ;
-  void getSettingProfile(){
+
+  void getSettingProfile() {
     emit(ShopLoadingGetSettingData());
-    DioHelper.getData(url: profile , token: CacheHelper.getData(key: 'token')
+    DioHelper.getData(url: profile, token: CacheHelper.getData(key: 'token')
     ).then((value) {
-      modelProfile = LoginModel.fromJson(value.data);
-      print(modelProfile.data.name);
-      emit(ShopSuccessGetSettingData(modelProfile));
+      loginModel = LoginModel.fromJson(value.data);
+      print(loginModel.data.name);
+      emit(ShopSuccessGetSettingData(loginModel));
     }
-    ).catchError((error){
+    ).catchError((error) {
       emit(ShopErrorGetSettingData(error: error));
+    });
+  }
+
+  void updateProfile({
+    @required String name,
+    @required String email,
+    @required String phone,
+  }) {
+    emit(ShopLoadingUpdateProfileData());
+    DioHelper.putData(
+        url: UPDATEPROFILE, token: CacheHelper.getData(key: 'token',
+    ),
+        data: {
+          'name': name,
+          'email': email,
+          'phone': phone
+        }
+    ).then((value) {
+      loginModel = LoginModel.fromJson(value.data);
+      print(loginModel.data.name);
+      emit(ShopSuccessUpdateProfileData(loginModel));
+    }
+    ).catchError((error) {
+      emit(ShopErrorUpdateProfileData(error: error));
     });
   }
 }
