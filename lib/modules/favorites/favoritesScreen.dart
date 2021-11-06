@@ -18,98 +18,13 @@ class FavoritesScreen extends StatelessWidget {
           condition: state is! ShopLoadingGetFavoritesData ,
           builder: (context) => ListView.separated(
               physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) => buildFavoriteItem(ShopCubit.get(context).getFavoritesModel.data.data[index] , context),
+              itemBuilder: (context, index) => buildProductItem(ShopCubit.get(context).getFavoritesModel.data.data[index].product , context),
               separatorBuilder: (context , index)=> buildSeparator(),
               itemCount: ShopCubit.get(context).getFavoritesModel.data.data.length
           ),
           fallback: (context) => Center(child: CircularProgressIndicator()),
         );
       },
-    );
-  }
-  Widget buildFavoriteItem(FavoritesData favoritesModel , context){
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: 120,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 120,
-              width: 120,
-              child: Stack(
-                  alignment: AlignmentDirectional.bottomStart,
-                  children:[
-                    Image.network( favoritesModel.product.image ,loadingBuilder:(BuildContext context, Widget child,ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null ?
-                          loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
-                              : null,
-                        ),
-                      );
-                    },
-                      fit: BoxFit.cover,
-                      height: 120,
-                      width: 120,
-                    ),
-                    if(favoritesModel.product.discount !=0)
-                      Container(
-                        width: 100,
-                        height: 40,
-                        decoration: BoxDecoration(color: Colors.red[300],
-                            borderRadius: BorderRadius.circular(25)
-                        ),
-                        child: Center(child: Text('DISCOUNT')),
-                      )
-                  ]
-              ),
-            ),
-            SizedBox(width: 10,),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(favoritesModel.product.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Text(favoritesModel.product.price.toString(),
-                          style: TextStyle(fontSize: 14, color: Colors.blueAccent),
-                        ),
-                        SizedBox(width: 5,),
-                        if(0!=0)
-                          Text(favoritesModel.product.oldPrice,
-                            style: TextStyle(fontSize: 14,
-                                decoration: TextDecoration.lineThrough,
-                                color: Colors.blueAccent
-                            ) ,
-                          ),
-                        Spacer(),
-                        IconButton(
-                            icon: CircleAvatar(
-                                backgroundColor: ShopCubit.get(context).favorite[favoritesModel.product.id] ? defaultColor : Colors.grey,
-                                child:
-                                Icon(Icons.favorite_border_outlined, color: Colors.white,)),
-                            onPressed: (){
-                              ShopCubit.get(context).changeFavorites(favoritesModel.product.id);
-                            }
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

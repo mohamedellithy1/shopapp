@@ -18,7 +18,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ShopCubit.get(context)..getHomeData()..getFavoritesData()..getSettingProfile()..getCateogries();
     Timer(Duration(seconds: 3), () {
       if (onBoarding != null) {
         if (token != null)
